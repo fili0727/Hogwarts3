@@ -1,4 +1,4 @@
-package kea.exercise.hogwarts3;
+package kea.exercise.hogwarts3.edu.hogwarts.studentadmin;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
