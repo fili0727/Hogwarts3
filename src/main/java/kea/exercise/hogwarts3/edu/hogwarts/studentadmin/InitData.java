@@ -35,13 +35,13 @@ public class InitData implements CommandLineRunner {
 
 
     public void run(String...args) {
-        House gryffindor = new House("Godric Gryffindor",
+        House gryffindor = new House("gryffindor","Godric Gryffindor",
                 List.of(new HouseColor("Red"), new HouseColor("Gold")));
-        House hufflepuff = new House("Helga Hufflepuff",
+        House hufflepuff = new House("hufflepuff","Helga Hufflepuff",
                 List.of(new HouseColor("Yellow"), new HouseColor("Black")));
-        House ravenclaw = new House("Rowena Ravenclaw",
+        House ravenclaw = new House("ravenclaw","Rowena Ravenclaw",
                 List.of(new HouseColor("Blue"), new HouseColor("Bronze")));
-        House slytherin = new House("Salazar Slytherin",
+        House slytherin = new House("slytherin","Salazar Slytherin",
                 List.of(new HouseColor("Green"), new HouseColor("Silver")));
 
         houseRepository.save(gryffindor);
@@ -52,17 +52,17 @@ public class InitData implements CommandLineRunner {
 
         Student harry = new Student("Harry", "James", "Potter",
                 LocalDate.of(1980, 7, 31),
-                gryffindor, true, 1991, 1998, true );
+                gryffindor, true, 1991,1, 1998, true );
 
         Student cedric = new Student("Cedric", "", "Diggory",
                 LocalDate.of(1977, 9, 1),
-                hufflepuff, false, 1996, 1989, true);
+                hufflepuff, false, 1996,1, 1989, true);
 
-        Student eleanor = new Student("Eleanor", "Jane", "Fawley", LocalDate.of(1980, 3, 22), ravenclaw, false, 1991, 1998, true);
+        Student eleanor = new Student("Eleanor", "Jane", "Fawley", LocalDate.of(1980, 3, 22), ravenclaw, false, 1991,1, 1998, true);
 
         Student draco = new Student("Draco", "Lucius", "Malfoy",
                 LocalDate.of(1980, 6, 5),
-                slytherin, false, 1992, 1998, true);
+                slytherin, false, 1992,1, 1998, true);
 
         studentRepository.save(harry);
         studentRepository.save(cedric);

@@ -7,14 +7,14 @@ import java.util.List;
 @Entity
 public class House {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String houseName;
     private String founder;
     @OneToMany(cascade = CascadeType.ALL)
     private List<HouseColor> houseColors;
 
 
-    public House(String founder, List<HouseColor> houseColors) {
+    public House(String houseName, String founder, List<HouseColor> houseColors) {
+        this.houseName = houseName;
         this.founder = founder;
         this.houseColors = houseColors;
     }
@@ -23,6 +23,7 @@ public class House {
     }
 
     public void copyFrom(House otherHouse){
+        this.setHouseName(otherHouse.getHouseName());
         this.setFounder(otherHouse.getFounder());
         this.setHouseColors(otherHouse.getHouseColors());
     }
@@ -30,12 +31,12 @@ public class House {
     public House() {
     }
 
-    public int getId() {
-        return id;
+    public String getHouseName() {
+        return houseName;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setHouseName(String houseName) {
+        this.houseName = houseName;
     }
 
     public String getFounder() {

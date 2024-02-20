@@ -1,5 +1,6 @@
 package kea.exercise.hogwarts3.edu.hogwarts.studentadmin.models;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,6 +11,7 @@ public class HouseColor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @JsonValue
     private String name;
 
     public HouseColor() {

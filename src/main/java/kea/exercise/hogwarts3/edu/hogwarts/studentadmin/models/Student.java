@@ -1,5 +1,9 @@
 package kea.exercise.hogwarts3.edu.hogwarts.studentadmin.models;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -9,19 +13,30 @@ import java.time.LocalDate;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private int id;
+    @JsonIgnore
     private String firstName;
+    @JsonIgnore
     private String middleName;
+    @JsonIgnore
     private String lastName;
+    @JsonIgnore
     private LocalDate dateOfBirth;
     @ManyToOne
     private House house;
+    @JsonIgnore
     private boolean prefect;
+    @JsonIgnore
     private int enrollmentYear;
+    @JsonIgnore
+    private int schoolYear;
+    @JsonIgnore
     private int graduationYear;
+    @JsonIgnore
     private boolean graduated;
 
-    public Student(String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated) {
+    public Student(String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int schoolYear, int graduationYear, boolean graduated) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -29,18 +44,18 @@ public class Student {
         this.house = house;
         this.prefect = prefect;
         this.enrollmentYear = enrollmentYear;
+        this.schoolYear = schoolYear;
         this.graduationYear = graduationYear;
         this.graduated = graduated;
     }
 
     public void copyFrom(Student otherStudent) {
-        this.setFirstName(otherStudent.getFirstName());
-        this.setMiddleName(otherStudent.getMiddleName());
-        this.setLastName(otherStudent.getLastName());
+        this.setFullName(otherStudent.getFullName());
         this.setDateOfBirth(otherStudent.getDateOfBirth());
         this.setHouse(otherStudent.getHouse());
         this.setPrefect(otherStudent.isPrefect());
         this.setEnrollmentYear(otherStudent.getEnrollmentYear());
+        this.setSchoolYear(otherStudent.getSchoolYear());
         this.setGraduationYear(otherStudent.getGraduationYear());
         this.setGraduated(otherStudent.isGraduated());
     }
@@ -54,6 +69,30 @@ public class Student {
 
     public void setId(int id){
         this.id = id;
+    }
+
+    @JsonGetter("fullName")
+    public String getFullName() {
+        if(middleName== null) {
+            return firstName + " " + lastName;
+        }else{
+            return firstName + " " + middleName + " " + lastName;
+        }
+    }
+
+    @JsonSetter("fullName")
+    public String setFullName(String fullName) {
+        String[] names = fullName.split(" ");
+        if(names.length == 2) {
+            this.firstName = names[0];
+            this.middleName = null;
+            this.lastName = names[1];
+        }else {
+            this.firstName = names[0];
+            this.middleName = names[1];
+            this.lastName = names[2];
+        }
+        return fullName;
     }
 
     public String getFirstName() {
@@ -88,8 +127,14 @@ public class Student {
         this.dateOfBirth = dateOfBirth;
     }
 
+    @JsonIgnore
     public House getHouse() {
         return house;
+    }
+
+    @JsonGetter("house")
+    public String getHouseName() {
+        return house.getHouseName();
     }
 
     public void setHouse(House house) {
@@ -110,6 +155,14 @@ public class Student {
 
     public void setEnrollmentYear(int enrollmentYear) {
         this.enrollmentYear = enrollmentYear;
+    }
+
+    public int getSchoolYear() {
+        return schoolYear;
+    }
+
+    public void setSchoolYear(int schoolYear) {
+        this.schoolYear = schoolYear;
     }
 
     public int getGraduationYear() {

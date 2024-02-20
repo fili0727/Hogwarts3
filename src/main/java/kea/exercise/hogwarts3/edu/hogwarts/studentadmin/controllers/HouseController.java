@@ -35,33 +35,33 @@ public class HouseController {
     public House createHouse(@RequestBody House house) {
         return houseRepository.save(house);
     }
-
-    @PutMapping("/houses/{id}")
-    public ResponseEntity<House> updateHouse(@PathVariable int id, @RequestBody House house) {
-        Optional<House> updateHouse = houseRepository.findById(id);
-
-        if(updateHouse.isPresent()) {
-            House objectGettingUpdated = updateHouse.get();
-            objectGettingUpdated.copyFrom(house);
-
-            House updatedHouse = houseRepository.save(objectGettingUpdated);
-            return ResponseEntity.ok().body(updatedHouse);
-        } else {
-            House newHouse = new House(house);
-
-            House savedHouse = houseRepository.save(newHouse);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedHouse);
-        }
-    }
-
-    @DeleteMapping("/houses/{id}")
-    public ResponseEntity<House> deleteHouse(@PathVariable int id) {
-
-            Optional<House> house = houseRepository.findById(id);
-            houseRepository.deleteById(id);
-
-            return ResponseEntity.of(house);
-        }
+//
+//    @PutMapping("/houses/{id}")
+//    public ResponseEntity<House> updateHouse(@PathVariable int id, @RequestBody House house) {
+//        Optional<House> updateHouse = houseRepository.findById(id);
+//
+//        if(updateHouse.isPresent()) {
+//            House objectGettingUpdated = updateHouse.get();
+//            objectGettingUpdated.copyFrom(house);
+//
+//            House updatedHouse = houseRepository.save(objectGettingUpdated);
+//            return ResponseEntity.ok().body(updatedHouse);
+//        } else {
+//            House newHouse = new House(house);
+//
+//            House savedHouse = houseRepository.save(newHouse);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(savedHouse);
+//        }
+//    }
+//
+//    @DeleteMapping("/houses/{id}")
+//    public ResponseEntity<House> deleteHouse(@PathVariable int id) {
+//
+//            Optional<House> house = houseRepository.findById(id);
+//            houseRepository.deleteById(id);
+//
+//            return ResponseEntity.of(house);
+//        }
     }
 
 

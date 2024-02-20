@@ -1,5 +1,8 @@
 package kea.exercise.hogwarts3.edu.hogwarts.studentadmin.models;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -9,8 +12,11 @@ public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @JsonIgnore
     private String firstName;
+    @JsonIgnore
     private String middleName;
+    @JsonIgnore
     private String lastName;
     private LocalDate dateOfBirth;
     @ManyToOne
@@ -34,9 +40,7 @@ public class Teacher {
     }
 
     public void copyFrom(Teacher otherTeacher){
-        this.setFirstName(otherTeacher.getFirstName());
-        this.setMiddleName(otherTeacher.getMiddleName());
-        this.setLastName(otherTeacher.getLastName());
+        this.setFullName(otherTeacher.getFullName());
         this.setDateOfBirth(otherTeacher.getDateOfBirth());
         this.setHouse(otherTeacher.getHouse());
         this.setHeadOfHouse(otherTeacher.isHeadOfHouse());
@@ -54,6 +58,30 @@ public class Teacher {
 
     public void setId(int id){
         this.id = id;
+    }
+
+    @JsonGetter("fullName")
+    public String getFullName() {
+        if(middleName== null) {
+            return firstName + " " + lastName;
+        }else{
+            return firstName + " " + middleName + " " + lastName;
+        }
+    }
+
+    @JsonSetter("fullName")
+    public String setFullName(String fullName) {
+        String[] names = fullName.split(" ");
+        if(names.length == 2) {
+            this.firstName = names[0];
+            this.middleName = null;
+            this.lastName = names[1];
+        }else {
+            this.firstName = names[0];
+            this.middleName = names[1];
+            this.lastName = names[2];
+        }
+        return fullName;
     }
 
     public String getFirstName() {
@@ -88,8 +116,14 @@ public class Teacher {
         this.dateOfBirth = dateOfBirth;
     }
 
+    @JsonIgnore
     public House getHouse() {
         return house;
+    }
+
+    @JsonGetter("house")
+    public String getHouseName() {
+        return house.getHouseName();
     }
 
     public void setHouse(House house) {
