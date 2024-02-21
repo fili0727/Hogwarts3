@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -35,6 +36,7 @@ public class StudentController {
     public Student createStudent(@RequestBody Student student){
         return studentRepository.save(student);
     }
+    
 
     @PutMapping("/students/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable int id, @RequestBody Student student) {
@@ -53,6 +55,33 @@ public class StudentController {
             Student savedStudent = studentRepository.save(newStudent);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
         }
+    }
+
+    @PatchMapping("/students/{id}")
+    public ResponseEntity<Student> patchStudent(@PathVariable int id, @RequestBody Map<String, Object> updates) {
+        Optional<Student> optionalStudent = studentRepository.findById(id);
+
+        if (!optionalStudent.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Student student = optionalStudent.get();
+
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "prefect":
+                    student.setPrefect((Boolean) value);
+                    break;
+                case "schoolYear":
+                    student.setSchoolYear((Integer) value);
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        Student updatedStudent = studentRepository.save(student);
+        return ResponseEntity.ok(updatedStudent);
     }
 
     @DeleteMapping("/students/{id}")

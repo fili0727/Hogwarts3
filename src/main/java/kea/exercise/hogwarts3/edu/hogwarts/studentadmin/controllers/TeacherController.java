@@ -1,12 +1,16 @@
 package kea.exercise.hogwarts3.edu.hogwarts.studentadmin.controllers;
 
+import jakarta.transaction.Transactional;
+import kea.exercise.hogwarts3.edu.hogwarts.studentadmin.models.EmpType;
 import kea.exercise.hogwarts3.edu.hogwarts.studentadmin.models.Teacher;
 import kea.exercise.hogwarts3.edu.hogwarts.studentadmin.repositories.TeacherRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -34,6 +38,31 @@ public class TeacherController {
     @ResponseStatus(HttpStatus.CREATED)
     public Teacher createTeacher(@RequestBody Teacher teacher){
         return teacherRepository.save(teacher);
+    }
+
+    @PatchMapping("/teachers/{id}")
+    @Transactional
+    public ResponseEntity<Teacher> updateEmployee(@PathVariable int id, @RequestBody Map<String, Object> updates) {
+        Teacher original = teacherRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found with id " + id));
+
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "headOfHouse":
+                    original.setHeadOfHouse((Boolean) value);
+                    break;
+                case "employmentEnd":
+                    original.setEmploymentEnd(value == null ? null : LocalDate.parse((String) value));
+                    break;
+                case "employment":
+                    original.setEmployment(EmpType.valueOf((String) value));
+                    break;
+
+            }
+        });
+
+        teacherRepository.save(original);
+        return ResponseEntity.ok(original);
     }
 
     @PutMapping("/teachers/{id}")
