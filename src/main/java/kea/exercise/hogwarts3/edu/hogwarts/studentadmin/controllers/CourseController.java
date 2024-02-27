@@ -75,23 +75,26 @@ public class CourseController {
         return courseRepository.save(course);
     }
 
-    @PutMapping("/courses/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable int id, @RequestBody Course course) {
-        Optional<Course> original = courseRepository.findById(id);
-
-        if(original.isPresent()) {
-            Course originalCourse = original.get();
-            originalCourse.copyFrom(course);
-
-            Course updatedCourse = courseRepository.save(originalCourse);
-            return ResponseEntity.ok().body(updatedCourse);
-        } else {
-            Course newCourse = new Course(course);
-
-            Course savedCourse = courseRepository.save(newCourse);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedCourse);
+    @PostMapping("/courses/{id}/students")
+    public ResponseEntity<Course> addStudentsToCourse(@PathVariable int id, @RequestBody List<Integer> studentIds) {
+        Optional<Course> courseOptional = courseRepository.findById(id);
+        if (!courseOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
         }
+
+        Course course = courseOptional.get();
+        List<Student> studentsToAdd = studentRepository.findAllById(studentIds);
+
+
+        for (Student student : studentsToAdd) {
+            course.getStudents().add(student);
+        }
+
+        courseRepository.save(course);
+        return ResponseEntity.ok(course);
     }
+    //  Test data for postman ex: http://localhost:8080/courses/2/students ; this data    [3,4]
+
 
     @PutMapping("courses/{id}/students")
     public ResponseEntity<Course> addStudentToCourse(@PathVariable int id, @RequestBody Student student) {
@@ -159,21 +162,6 @@ public class CourseController {
         }
     }
 
-    @DeleteMapping("/courses/{id}/teacher")
-    public ResponseEntity<Course> deleteTeacherFromCourse(@PathVariable int id, @RequestBody Teacher teacher) {
-        Optional<Teacher> DeleteTeacherFromCourse = teacherRepository.findById(teacher.getId());
-        Optional<Course> course = courseRepository.findById(id);
-
-        if (DeleteTeacherFromCourse.isPresent() && course.isPresent()) {
-            Course existingCourse = course.get();
-            existingCourse.setTeacher(null);
-
-            courseRepository.save(existingCourse);
-            return ResponseEntity.ok().body(existingCourse);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
 
 }
