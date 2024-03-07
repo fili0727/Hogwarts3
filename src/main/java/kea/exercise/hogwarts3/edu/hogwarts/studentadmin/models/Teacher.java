@@ -51,6 +51,20 @@ public class Teacher {
 
     public Teacher (){}
 
+    public void applyPatch(edu.hogwarts.studentadmin.models.DTOs.TeacherDTO teacherDTO) {
+        if (teacherDTO.getHeadOfHouse() != null) {
+            this.setHeadOfHouse(teacherDTO.getHeadOfHouse());
+        }
+
+        if (teacherDTO.getEmploymentEnd() != null) {
+            this.setEmploymentEnd(teacherDTO.getEmploymentEnd());
+        }
+
+        if (teacherDTO.getEmploymentType() != null) {
+            this.setEmployment(teacherDTO.getEmploymentType());
+        }
+    }
+
 
     public int getId() {
         return id;

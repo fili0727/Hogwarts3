@@ -8,10 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 
 @RestController
 public class TeacherController {
@@ -41,29 +43,21 @@ public class TeacherController {
     }
 
     @PatchMapping("/teachers/{id}")
-    @Transactional
-    public ResponseEntity<Teacher> updateEmployee(@PathVariable int id, @RequestBody Map<String, Object> updates) {
-        Teacher original = teacherRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found with id " + id));
+    public ResponseEntity<Teacher> patchTeacher(@PathVariable int id, @RequestBody edu.hogwarts.studentadmin.models.DTOs.TeacherDTO teacherDTO) {
+        Optional<Teacher> optionalTeacher = teacherRepository.findById(id);
 
-        updates.forEach((key, value) -> {
-            switch (key) {
-                case "headOfHouse":
-                    original.setHeadOfHouse((Boolean) value);
-                    break;
-                case "employmentEnd":
-                    original.setEmploymentEnd(value == null ? null : LocalDate.parse((String) value));
-                    break;
-                case "employment":
-                    original.setEmployment(EmpType.valueOf((String) value));
-                    break;
+        if (optionalTeacher.isPresent()) {
+            Teacher existingTeacher = optionalTeacher.get();
+            existingTeacher.applyPatch(teacherDTO);
 
-            }
-        });
-
-        teacherRepository.save(original);
-        return ResponseEntity.ok(original);
+            teacherRepository.save(existingTeacher);
+            return ResponseEntity.ok().body(existingTeacher);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
+
 
     @PutMapping("/teachers/{id}")
     public ResponseEntity<Teacher> updateTeacher(@PathVariable int id, @RequestBody Teacher teacher){
